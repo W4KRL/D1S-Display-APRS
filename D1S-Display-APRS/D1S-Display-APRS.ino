@@ -1,6 +1,6 @@
 // D1S-Display-APRS.ino
 
-// 04/17/2020 - update with new APRS scaling
+// 04/17/2020 - update with new APRS scaling (ver 3.x)
 // Vcell = 0.0025 * Byte + 2.5
 // dBm = - Byte
 // lux = 0.1218 * Byte^2 
@@ -41,7 +41,7 @@
 
 // Time functions by Rop Gonggrijp
 // See https://github.com/ropg/ezTime
-#include <ezTime.h>                       // [manager] v0.7.10 NTP & timezone 
+#include <ezTime.h>                 // [manager] v0.8.3 
 
 // Your configuration file must reside in the same
 // directory as this sketch
@@ -53,7 +53,7 @@
 //            DO NOT CHANGE THESE DEFAULTS
 const char APRS_DEVICE_NAME[] = "http://w4krl.com/iot-kits/";
 const char APRS_SOFTWARE_NAME[] = "D1S-RCVR";
-const char APRS_SOFTWARE_VERS[] = "1.00";
+const char APRS_SOFTWARE_VERS[] = "3.00";
 const long FRAME_INTERVAL = 5;                  // seconds to display frame
 
 // Select an APRS-IS Tier 2 server with filter capability
