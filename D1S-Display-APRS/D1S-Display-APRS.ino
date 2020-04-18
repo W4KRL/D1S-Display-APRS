@@ -88,7 +88,7 @@ Timezone myTZ;
 // ******************* GLOBALS ***************************
 // *******************************************************
 // APRS Data Type Identifiers
-// page 17 http://www.aprs.org/doc/APRS101.PDF
+// page 27 http://www.aprs.org/doc/APRS101.PDF
 const char APRS_ID_POSITION_NO_TIMESTAMP = '!';
 const char APRS_ID_TELEMETRY = 'T';
 const char APRS_ID_WEATHER = '_';
