@@ -1,14 +1,14 @@
-// D1S-Display-APRS-manual.ino
+// D1S-Display-APRS.ino
 
-// 06/06/2019 - converted to ezTime lib
-// 02/06/2019 - Moved to GitHub
-// 02/04/2019 - Cleanup for manual configuration
-// uses 0.1 * Byte + 2.5 for Vcell scaling
-// uses Byte^2 for lux
+// 04/17/2020 - update with new APRS scaling
+// Vcell = 0.0025 * Byte + 2.5
+// dBm = - Byte
+// lux = 0.1218 * Byte^2 
+// awake = 0.025 * Byte
 
 // 06/02/18 Release
 /*_____________________________________________________________________________
-   Copyright(c) 2018 - 2019 Karl Berger dba IoT Kits https://w4krl.com
+   Copyright(c) 2018 - 2020 Karl Berger dba IoT Kits https://w4krl.com
    Permission is hereby granted, free of charge, to any person obtaining a copy
    of this software and associated documentation files (the "Software"), to deal
    in the Software without restriction, including without limitation the rights
@@ -647,7 +647,7 @@ void aprsTelemetryFrame( boolean firstRender ) {
     for (int i = 0; i < 3; i++) {
       vCell[i] = APRSdataTelemetry[index + 1 + i];
     }
-    float ivCell = atof( vCell ) * 0.01 + 2.5;  // known scaling factor
+    float ivCell = atof( vCell ) * 0.0025 + 2.5;  // known scaling factor
 
     index = APRSdataTelemetry.indexOf(',', index + 2);
     for ( int i = 0; i < 3; i++ ) {
@@ -660,7 +660,7 @@ void aprsTelemetryFrame( boolean firstRender ) {
       lux[i] = APRSdataTelemetry[index + 1 + i];
     }
     long ilux = atoi(lux);
-    ilux = ilux * ilux;  // known scaling factor = square of byte rcvd
+    ilux = 0.1281 * ilux * ilux;  // known scaling factor = square of byte rcvd
     tft.setTextColor( BLUE, YELLOW );
     // align right side of values and left side of units
     String dispVdc = String( ivCell ) + " Vdc";
