@@ -1,10 +1,10 @@
 // D1S-Display-APRS.ino
 
 // 04/17/2020 - update with new APRS scaling (ver 3.x)
-// Vcell = 0.0025 * Byte + 2.5
-// dBm = - Byte
-// lux = 0.1218 * Byte^2 
-// awake = 0.025 * Byte
+// Vcell = 0.0025 * Byte + 2.5 Range 0 to 4.9975 Volts
+// dBm   = - Byte              Range 0 to -100 dBm
+// lux   = 0.1218 * Byte^2     Range 0 to 121,556.5 lux
+// awake = 0.025 * Byte        Range 0 to 25.975 seconds
 
 // 06/02/18 Release
 /*_____________________________________________________________________________
@@ -34,9 +34,9 @@
 #include <ESP8266WiFi.h>            // [builtin]
 
 // for Wemos TFT 1.4 display shield
-#include <Adafruit_GFX.h>           // [manager] Core graphics library
+#include <Adafruit_GFX.h>           // [manager] v1.7.5 Core graphics library
 #include <Fonts/FreeSerif9pt7b.h>   //           part of GFX for APRS message text
-#include <Adafruit_ST7735.h>        // [manager] Hardware-specific library
+#include <Adafruit_ST7735.h>        // [manager] v1.5.15 Hardware-specific library
 #include <SPI.h>                    // [builtin]
 
 // Time functions by Rop Gonggrijp
@@ -67,19 +67,16 @@ const int APRS_PORT = 14580;                    // for user-defined filter feed 
 // *******************************************************
 // Wemos TFT 1.4 shield connections
 // TFT_CS     D4  GPIO 2
-// TFT_RST    -1  use -1 according to Wemos
+// TFT_RST    0   use -1 according to Wemos
 // TFT_DC     D3  GPIO 0
-// MOSI       D7
-// SCK        D5
+// MOSI       D7  GPIO 13
+// SCK        D5  GPIO 14
 // TFT_LED    NC
 // Adafruit_ST7735(TFT_CS,  TFT_DC, TFT_RST);
 // Adafruit_ST7735 tft = Adafruit_ST7735(2,  0, -1);
-// Adafruit_ST7735 tft = Adafruit_ST7735(D4, D3, 0);
 #define TFT_CS     D4
-#define TFT_RST    0  // you can also connect this to the Arduino reset
-                      // in which case, set this #define pin to 0!
 #define TFT_DC     D3
-
+#define TFT_RST    0  // set to 0 when connected the D1 Mini reset
 Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS,  TFT_DC, TFT_RST);
 WiFiClient client;    // Wi-Fi connection
 Timezone myTZ;
