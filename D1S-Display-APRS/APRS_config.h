@@ -56,6 +56,7 @@ String tzLocation = "America/New_York";            // Eastern
 // Asia
 //String tzLocation = "Asia/Tokyo";                  // Japan
 //String tzLocation = "Asia/Shanghai"                // China
+//String tzLocation = "Asia/Kolkata"                 // India
 
 // Others
 //String tzLocation = "America/PE"                   // Peru
