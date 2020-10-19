@@ -1,5 +1,6 @@
 // D1S-Display-APRS.ino
 
+// 10/19/2020 - fixed analog clock to read local tz
 // 04/17/2020 - update with new APRS scaling (ver 3.x)
 // Vcell = 0.0025 * Byte + 2.5 Range 0 to 4.9975 Volts
 // dBm   = - Byte              Range 0 to -100 dBm
@@ -34,9 +35,9 @@
 #include <ESP8266WiFi.h>            // [builtin]
 
 // for Wemos TFT 1.4 display shield
-#include <Adafruit_GFX.h>           // [manager] v1.7.5 Core graphics library
+#include <Adafruit_GFX.h>           // [manager] v1.10.2 Core graphics library
 #include <Fonts/FreeSerif9pt7b.h>   //           part of GFX for APRS message text
-#include <Adafruit_ST7735.h>        // [manager] v1.5.15 Hardware-specific library
+#include <Adafruit_ST7735.h>        // [manager] v1.6.0 Hardware-specific library
 #include <SPI.h>                    // [builtin]
 
 // Time functions by Rop Gonggrijp
@@ -53,7 +54,7 @@
 //            DO NOT CHANGE THESE DEFAULTS
 const char APRS_DEVICE_NAME[] = "http://w4krl.com/iot-kits/";
 const char APRS_SOFTWARE_NAME[] = "D1S-RCVR";
-const char APRS_SOFTWARE_VERS[] = "3.00";
+const char APRS_SOFTWARE_VERS[] = "3.10";
 const long FRAME_INTERVAL = 5;                  // seconds to display frame
 
 // Select an APRS-IS Tier 2 server with filter capability
@@ -197,7 +198,7 @@ void loop() {
       if ( APRSdataWeather != APRSrcvd ) { // it has changed so update it
         APRSdataWeather = APRSrcvd;
         // record time data is received
-        sprintf(APRSage, "%02d:%02d:%02d", myTZ.hour(), minute(), second());
+        sprintf(APRSage, "%02d:%02d:%02d", myTZ.hour(), myTZ.minute(), second());
       }
     }
     // does stream contain Telemetry?
@@ -440,7 +441,7 @@ void analogClockFrame( boolean firstRender ) {
     tft.setTextColor( GREEN, BLACK );
     // add hour ticks & numerals
     for ( int numeral = 1; numeral < 13; numeral++ ) {
-      // Begin at 30Â° and stop at 360Â° (noon)
+      // Begin at 30 and stop at 360 degrees (noon)
       float angle = 30 * numeral;          // convert hour to angle in degrees
       angle = angle / 57.29577951; // Convert degrees to radians
       x2 = ( clockCenterX + ( sin( angle ) * outerTickR ));
@@ -472,7 +473,7 @@ void analogClockFrame( boolean firstRender ) {
   tft.drawLine( clockCenterX, clockCenterY, x3, y3, ORANGERED );
 
   // display minute hand
-  angle = minute() * 6;        // each minute advances 6 degrees
+  angle = myTZ.minute() * 6;        // each minute advances 6 degrees
   angle = angle / 57.29577951; // Convert degrees to radians
   static float oldMinute = angle;
   // erase old minute hand
@@ -491,7 +492,7 @@ void analogClockFrame( boolean firstRender ) {
   int dialHour = myTZ.hour();
   if ( dialHour > 13 ) dialHour = dialHour - 12;
   // 30 degree increments + adjust for minutes
-  angle = myTZ.hour() * 30 + int(( minute() / 12 ) * 6 );
+  angle = myTZ.hour() * 30 + int(( myTZ.minute() / 12 ) * 6 );
   angle = ( angle / 57.29577951 ); //Convert degrees to radians
   static float oldHour = angle;
   if ( angle != oldHour || firstRender ) {
